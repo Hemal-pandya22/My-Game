@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tic Tac Toe</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(-45deg,#ff6b6b,#6c5ce7,#00cec9,#ffeaa7);
+background-size:400% 400%;
+animation:gradientBG 10s ease infinite;
+}
+
+@keyframes gradientBG{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+
+.container{
+text-align:center;
+color:white;
+}
+
+h1{
+margin-bottom:15px;
+font-size:32px;
+text-shadow:0 2px 10px rgba(0,0,0,0.4);
+}
+
+.status{
+margin-bottom:15px;
+font-size:20px;
+}
+
+.board{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+width:90vw;
+max-width:320px;
+margin:auto;
+}
+
+.cell{
+aspect-ratio:1;
+background:rgba(255,255,255,0.2);
+backdrop-filter:blur(10px);
+border-radius:15px;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:40px;
+font-weight:bold;
+cursor:pointer;
+transition:0.2s;
+}
+
+.cell:hover{
+background:rgba(255,255,255,0.35);
+transform:scale(1.05);
+}
+
+button{
+margin-top:20px;
+padding:10px 20px;
+border:none;
+border-radius:10px;
+background:white;
+color:#333;
+font-size:16px;
+cursor:pointer;
+font-weight:bold;
+}
+
+button:hover{
+background:#f1f1f1;
+}
+
+@media (max-width:400px){
+h1{font-size:26px;}
+.cell{font-size:32px;}
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>✨ Tic Tac Toe ✨</h1>
+
+<div class="status" id="status">Player X's Turn</div>
+
+<div class="board" id="board">
+<div class="cell"></div>
+<div class="cell"></div>
+<div class="cell"></div>
+<div class="cell"></div>
+<div class="cell"></div>
+<div class="cell"></div>
+<div class="cell"></div>
+<div class="cell"></div>
+<div class="cell"></div>
+</div>
+
+<button onclick="restartGame()">Restart Game</button>
+
+</div>
+
+<script>
+
+let cells = document.querySelectorAll(".cell");
+let statusText = document.getElementById("status");
+
+let currentPlayer = "X";
+let gameActive = true;
+
+const winPatterns = [
+[0,1,2],
+[3,4,5],
+[6,7,8],
+[0,3,6],
+[1,4,7],
+[2,5,8],
+[0,4,8],
+[2,4,6]
+];
+
+cells.forEach((cell,index)=>{
+cell.addEventListener("click",()=>cellClick(cell,index));
+});
+
+function cellClick(cell,index){
+
+if(cell.textContent !== "" || !gameActive) return;
+
+cell.textContent = currentPlayer;
+
+if(checkWinner()){
+statusText.textContent = `🎉 Player ${currentPlayer} Wins!`;
+gameActive = false;
+return;
+}
+
+if([...cells].every(cell => cell.textContent !== "")){
+statusText.textContent = "😮 It's a Draw!";
+gameActive = false;
+return;
+}
+
+currentPlayer = currentPlayer === "X" ? "O" : "X";
+statusText.textContent = `Player ${currentPlayer}'s Turn`;
+
+}
+
+function checkWinner(){
+return winPatterns.some(pattern=>{
+let [a,b,c] = pattern;
+return (
+cells[a].textContent &&
+cells[a].textContent === cells[b].textContent &&
+cells[a].textContent === cells[c].textContent
+);
+});
+}
+
+function restartGame(){
+
+cells.forEach(cell=>cell.textContent="");
+
+currentPlayer = "X";
+gameActive = true;
+statusText.textContent = "Player X's Turn";
+
+}
+
+</script>
+
+</body>
+</html>
